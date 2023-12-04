@@ -1,31 +1,29 @@
-def part1(input_txt: str) -> int:
+from functools import reduce
+from typing import Iterable
+
+
+def get_points(input_txt: str) -> Iterable[int]:
     with open(input_txt) as f:
         lines = list(map(lambda x: x.strip(), f.readlines()))
-        res = 0
         for line in lines:
             _, card = line.split(":")
-            l, r = card.split("|")
-            li = set(map(lambda x: int(x), l.split()))
-            ri = set(map(lambda x: int(x), r.split()))
-            v = len(li & ri)
-            if v > 0:
-                res += 2 ** (v - 1)
-        return res
+            yield len(reduce(lambda a, b: a & b,
+                             [set(map(lambda x: int(x), s.split())) for s in card.split("|")]))
+
+
+def part1(input_txt: str) -> int:
+    points = get_points(input_txt)
+    return sum([2 ** (p - 1) for p in points if p > 0])
 
 
 def part2(input_txt: str) -> int:
-    with open(input_txt) as f:
-        lines = list(map(lambda x: x.strip(), f.readlines()))
-        copies = [1] * len(lines)
-        for idx, line in enumerate(lines):
-            _, card = line.split(":")
-            l, r = card.split("|")
-            li = set(map(lambda x: int(x), l.split()))
-            ri = set(map(lambda x: int(x), r.split()))
-            v = len(li & ri)
-            for j in range(idx + 1, idx + v + 1):
-                copies[j] += copies[idx]
-        return sum(copies)
+    points = list(get_points(input_txt))
+    n = len(points)
+    copies = [1] * n
+    for i in range(n):
+        for j in range(i + 1, i + points[i] + 1):
+            copies[j] += copies[i]
+    return sum(copies)
 
 
 if __name__ == '__main__':
