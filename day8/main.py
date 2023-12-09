@@ -1,4 +1,4 @@
-import functools
+import math
 
 
 def read_input(input_txt):
@@ -24,14 +24,6 @@ def part1(input_txt):
     return res
 
 
-def nwd(a, b):
-    return nwd(b, a % b) if b else a
-
-
-def nww(a, b):
-    return a * b // nwd(a, b)
-
-
 def part2(input_txt):
     ins, m = read_input(input_txt)
     curr = [c for c in m.keys() if c.endswith("A")]
@@ -43,7 +35,7 @@ def part2(input_txt):
             ic = (ic + 1) % len(ins)
             tmp += 1
         res.append(tmp)
-    return functools.reduce(nww, res)
+    return math.lcm(*res)
 
 
 if __name__ == '__main__':
