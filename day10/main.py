@@ -75,7 +75,7 @@ def solve(input_txt):
             if d in PIPES[m[ny][nx]]:
                 part1 = dfs(m, (nx, ny), (sx, sy), loop) // 2
                 break
-        m[sy] = m[sy][:sx] + "7" + m[sy][sx + 1:]  # TODO: S replaced manually, write algo for that
+        m[sy] = m[sy][:sx] + "7" + m[sy][sx + 1:]  # XXX: works only when S == 7
         part2 = scan(m, loop)
         return part1, part2
 
