@@ -18,26 +18,23 @@ def part2(input_txt):
         boxes = [dict() for _ in range(256)]
         slot_id = 0
         for s in steps:
-            match s.split("="):
-                case label, focal:
+            match s.strip("-").split("="):
+                case [label, focal]:
                     focal = int(focal)
                     b = calc_hash(label)
-                    lens = [slot_id, focal]
                     if label in boxes[b]:
                         boxes[b][label][1] = focal
                     else:
-                        boxes[b][label] = lens
-                case [label] if label.endswith("-"):
-                    label = label[:-1]
+                        boxes[b][label] = [slot_id, focal]
+                case [label]:
                     b = calc_hash(label)
-                    if label in boxes[b]:
-                        del boxes[b][label]
+                    boxes[b].pop(label, 0)
             slot_id += 1
         res = 0
-        for i in range(len(boxes)):
-            ordered_focals = list(map(lambda lns: lns[1], sorted(boxes[i].values(), key=lambda v: v[0])))
-            for j, focal in enumerate(ordered_focals):
-                res += (i + 1) * (j + 1) * focal
+        for i, box in enumerate(boxes, 1):
+            ordered_focals = list(map(lambda lns: lns[1], sorted(box.values(), key=lambda v: v[0])))
+            for j, focal in enumerate(ordered_focals, 1):
+                res += i * j * focal
         return res
 
 
